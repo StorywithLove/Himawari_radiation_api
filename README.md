@@ -82,6 +82,10 @@ if i == 0 && h.isEmpty && downloadRange.count > 1 {
 }
 ```
 ## 2. 辐射转换
-```swift
-Sources/App/Helper/Solar/Zensun.swift
-```
+https://github.com/open-meteo/open-meteo/tree/main/Sources/App/Helper/Solar
+- DirectNormalIrradiance.swift
+- GlobalTilitedIrradiance.swift
+- SolarPositionAlgorithm.swift
+- SunRiseSet.swift
+- Zensun.swift
+
