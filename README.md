@@ -85,9 +85,14 @@ if i == 0 && h.isEmpty && downloadRange.count > 1 {
 ```
 ## 2. 辐射转换
 https://github.com/open-meteo/open-meteo/tree/main/Sources/App/Helper/Solar
-- DirectNormalIrradiance.swift
-- GlobalTilitedIrradiance.swift
-- SolarPositionAlgorithm.swift
-- SunRiseSet.swift
 - Zensun.swift
+  - calculateDiffuseRadiationBackwards(), 基于Razo, Müller Witwer分离模型, 从总辐射/地面短波辐射中分解出散射分量、直射分量
+- DirectNormalIrradiance.swift
+  - calculateInstantDNI，基于水平面直射分量, 逆向计算太阳法向DNI
+- GlobalTilitedIrradiance.swift
+  - calculateTiltedIrradiance(), 基于[DNI, DHI, tilt, azimuth]计算GTI = 散射辐射-等向性天空, 地面反射-反射率0.2, 直接辐射-太阳入射角余弦, 通过积分平均法计算太阳位置
+- SolarPositionAlgorithm.swift
+  - SolarPositionAlgorithm(), 基于NREL SPA算法的太阳位置计算
+- SunRiseSet.swift
+  - calculateSunRiseSet, 基于太阳几何位置和时间, 计算日出日落时间
 
