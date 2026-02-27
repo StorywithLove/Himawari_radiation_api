@@ -6,7 +6,7 @@
 - open-meteo于2025-02-06接入Himawari SWR：    
   👉 [feat: JMA JAXA Himawari solar radiation](https://github.com/open-meteo/open-meteo/pull/1220)
 - open-meteo SWR接口：   
-  👉 https://api.open-meteo.com/v1/forecast
+  👉 https://satellite-api.open-meteo.com/v1/archive
   
 ## 📋 项目概述
 本项目实现了一个自动化卫星辐射数据处理系统，用于下载、校正和存档 Himawari-8/9 卫星的短波辐射（SWR）数据，生成可直接用于光伏预测和辐射分析的高质量产品。
