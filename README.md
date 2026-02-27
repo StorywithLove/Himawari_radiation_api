@@ -5,6 +5,8 @@
   👉 https://github.com/open-meteo/open-meteo
 - open-meteo于2025-02-06接入Himawari SWR：    
   👉 [feat: JMA JAXA Himawari solar radiation](https://github.com/open-meteo/open-meteo/pull/1220)
+- open-meteo SWR接口：   
+  👉 https://api.open-meteo.com/v1/forecast
   
 ## 📋 项目概述
 本项目实现了一个自动化卫星辐射数据处理系统，用于下载、校正和存档 Himawari-8/9 卫星的短波辐射（SWR）数据，生成可直接用于光伏预测和辐射分析的高质量产品。
@@ -32,8 +34,9 @@
 
 ---
 
-## 1. 近实时辐射处理
-⚠️ 核心挑战：为什么需要双重校正
+## 1. 近实时辐射时间校正
+⚠️ 核心挑战：为什么需要双重校正？  
+
 原始 Himawari L2 SWR 数据存在两个关键问题，使其无法直接用于时间序列分析：
 
 1. **时间标签不一致**
@@ -65,7 +68,10 @@ let time = run.add(domain.dtSeconds)  // dtSeconds = 600（10分钟）
 #### 第二层：物理量校正  
 
 **校正策略**   
-将瞬时辐射值转换为 10 分钟向后平均：  
+将瞬时辐射值转换为 10 分钟(向后)平均：  
+| 校正后时间 | 物理含义 |
+|------------|-----------|
+| 10:10      | 10:00-10:10 平均辐射|
 
 **关键处理**    
 - 依赖前序数据，需要前 10 分钟的数据进行插值  
@@ -90,7 +96,7 @@ https://github.com/open-meteo/open-meteo/tree/main/Sources/App/Helper/Solar
 - DirectNormalIrradiance.swift
   - calculateInstantDNI，基于水平面直射分量, 逆向计算太阳法向DNI
 - GlobalTilitedIrradiance.swift
-  - calculateTiltedIrradiance(), 基于[DNI, DHI, tilt, azimuth]计算GTI = 散射辐射-等向性天空, 地面反射-反射率0.2, 直接辐射-太阳入射角余弦, 通过积分平均法计算太阳位置
+  - calculateTiltedIrradiance(), 基于[DNI, DHI, tilt, azimuth]计算GTI/POA = 散射辐射-等向性天空, 地面反射-反射率0.2, 直接辐射-太阳入射角余弦, 通过积分平均法计算太阳位置
 - SolarPositionAlgorithm.swift
   - SolarPositionAlgorithm(), 基于NREL SPA算法的太阳位置计算
 - SunRiseSet.swift
