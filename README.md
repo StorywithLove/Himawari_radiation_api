@@ -80,8 +80,8 @@ let time = run.add(domain.dtSeconds)  // dtSeconds = 600（10分钟）
   
 **代码实现示例**（Swift）:
 ```swift
-// 主调用函数
-class instantaneousSolarRadiationToBackwardsAverages()
+// 主调用函数. Sources/App/Helper/Solar/Zensun.swift
+Zensun.instantaneousSolarRadiationToBackwardsAverages()
 
 // 首个时间点处理
 if i == 0 && h.isEmpty && downloadRange.count > 1 {
