@@ -76,7 +76,10 @@ let time = run.add(domain.dtSeconds)  // dtSeconds = 600（10分钟）
   
 **代码实现示例**（Swift）:
 ```swift
-// 第一时间点缺失处理
+// 主调用函数
+class instantaneousSolarRadiationToBackwardsAverages()
+
+// 首个时间点处理
 if i == 0 && h.isEmpty && downloadRange.count > 1 {
     // 主动回退下载前一个时间点（如 9:50）
     return try await downloadRun(..., run: run.add(-600), ...)
