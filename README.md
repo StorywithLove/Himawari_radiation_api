@@ -1,5 +1,30 @@
 # Himawari Radiation API
 
+## 项目来源
+- 原始数据结构与实现思路参考自：  
+  👉 https://github.com/open-meteo/open-meteo
+  
+### Open-Meteo 模块化设计
+
+Open-Meteo 采用模块化设计理念，将复杂的气象数据处理流程分解为多个独立组件。在 `Sources/App` 目录下，系统按照功能域进行组织：
+
+#### 1. 数据采集层
+- **路径**：`Sources/App/Helper/Download`  
+- **功能**：负责从全球各大气象机构实时获取原始数据
+
+#### 2. 数据处理层
+- **路径**：`Sources/App/Reader`  
+- **功能**：专门解析 GRIB、NetCDF 等专业气象文件格式
+
+#### 3. API 服务层
+- **路径**：`Sources/App/Controllers`  
+- **功能**：通过 RESTful 接口实现数据的高效分发
+
+#### 4. 缓存优化层
+- **实现文件**：`AtomicBlockCache.swift`  
+- **功能**：实现分布式缓存机制，大幅提升数据访问性能
+
+
 ## 📋 项目概述
 本项目实现了一个自动化卫星辐射数据处理系统，用于下载、校正和存档 Himawari-8/9 卫星的短波辐射（SWR）数据，生成可直接用于光伏预测和辐射分析的高质量产品。
 
