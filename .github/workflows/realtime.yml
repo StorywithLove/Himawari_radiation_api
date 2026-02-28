@@ -19,8 +19,8 @@ jobs:
         # 替换为你的FTP地址、账号密码、文件路径
         FTP_USER="13007129791_163.com"
         FTP_PASS="SP+wari8"
-        FTP_HOST="ftp.example.com"  # H8的FTP服务器地址
-        NC_FILE_PATH="ftp://ftp.ptree.jaxa.jp/pub/himawari/L2/PAR/021/202602/28/09/H09_20260228_0900_RFL021_FLDK.02801_02401.nc"  # NC文件在FTP上的路径
+        FTP_HOST="ftp.ptree.jaxa.jp"  # H8的FTP服务器地址
+        NC_FILE_PATH="/pub/himawari/L2/PAR/021/202602/28/09/H09_20260228_0900_RFL021_FLDK.02801_02401.nc"  # NC文件在FTP上的路径
         SAVE_FILE_NAME="h8_download.nc"  # 本地保存的文件名
         
         # 使用wget下载，开启进度条、速度显示、断点续传、详细日志
