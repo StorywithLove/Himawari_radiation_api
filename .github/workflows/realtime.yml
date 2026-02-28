@@ -1,0 +1,40 @@
+name: H8_10min_download
+
+on:
+  workflow_dispatch:      # 允许手动补跑
+  # schedule:
+    # - cron: '50 * * * *'  
+permissions:
+  contents: write
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Show current time
+      run: date
+    # 核心步骤：安装依赖（可选，ubuntu-latest默认有wget）+ 下载NC文件并输出速度
+    - name: Download H8 NC file from FTP with speed
+      run: |
+        # 替换为你的FTP地址、账号密码、文件路径
+        FTP_USER="13007129791_163.com"
+        FTP_PASS="SP+wari8"
+        FTP_HOST="ftp.example.com"  # H8的FTP服务器地址
+        NC_FILE_PATH="ftp://ftp.ptree.jaxa.jp/pub/himawari/L2/PAR/021/202602/28/09/H09_20260228_0900_RFL021_FLDK.02801_02401.nc"  # NC文件在FTP上的路径
+        SAVE_FILE_NAME="h8_download.nc"  # 本地保存的文件名
+        
+        # 使用wget下载，开启进度条、速度显示、断点续传、详细日志
+        wget \
+          --user="$FTP_USER" \
+          --password="$FTP_PASS" \
+          -c \  # 断点续传（如果下载中断，重新运行可续传）
+          -v \  # 详细输出（包含连接、速度、完成百分比）
+          --show-progress \  # 显示实时进度条和下载速度
+          -O "$SAVE_FILE_NAME" \  # 指定本地保存文件名
+          "ftp://$FTP_HOST$NC_FILE_PATH"
+    
+    # 可选步骤：验证下载文件（检查文件是否存在、大小）
+    - name: Verify downloaded file
+      run: |
+        ls -lh h8_download.nc  # 查看文件大小、权限等信息
+        du -sh h8_download.nc  # 简洁显示文件大小
