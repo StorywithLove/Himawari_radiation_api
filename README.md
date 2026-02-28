@@ -30,21 +30,41 @@
 
 /pub/himawari/L2/PAR/021/{year}{month}/{day}/{hour}
 
-
-
 ---
 
-## 1. 近实时辐射时间校正
+## 1. H8nc数据存档与二次读取
+**数据下载**
+
+- `JaxaHimawariDownloader.swift` 定义下载方法  
+- 每次下载包含两类文件：
+  - `AuxilaryData.nc`：辅助文件、**直接存档**
+  - 原始 nc 文件：数据文件、**在线解析**
+
+解析并校正后的数据会通过 `OmFileSplitter` 写入临时文件，  
+写入路径由 `OmFileSplitter.makeSpatialWriter` 生成；  
+并可选上传至 Amazon S3。
+
+**数据保存路径**
+
+```swift
+// Sources/App/Helper/DomainRegistry.swift
+var directory: String {
+    return "\(OpenMeteo.dataDirectory)\(rawValue)/"
+}
+```
+---
+
+## 2. 近实时辐射时间校正
 ⚠️ 核心挑战：为什么需要双重校正？  
 
 原始 Himawari L2 SWR 数据存在两个关键问题，使其无法直接用于时间序列分析：
 
-1. **时间标签不一致**
+- **时间标签不一致**
    - 文件名时间 = 扫描开始时间（如 10:00）
    - 实际观测时间 = 随扫描位置变化（南北差异可达 8-10 分钟）
    - 例如：日本区域的像元实际在 10:08 才被观测到
 
-2. **物理含义不匹配**
+- **物理含义不匹配**
    - 原始数据是瞬时辐射值
    - 实际应用需要时间平均辐射值
    - 扫描过程中太阳位置持续变化
@@ -89,7 +109,7 @@ if i == 0 && h.isEmpty && downloadRange.count > 1 {
     return try await downloadRun(..., run: run.add(-600), ...)
 }
 ```
-## 2. 辐射转换
+## 3. 辐射转换
 https://github.com/open-meteo/open-meteo/tree/main/Sources/App/Helper/Solar
 - Zensun.swift
   - calculateDiffuseRadiationBackwards(), 基于Razo, Müller Witwer分离模型, 从总辐射/地面短波辐射中分解出散射分量、直射分量
