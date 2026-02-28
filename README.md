@@ -1,8 +1,8 @@
 # Himawari Radiation API
 
 ## 项目来源
-- 原始项目：👉 https://github.com/open-meteo/open-meteo
-- 原始项目解析(DeepWiki)：👉 https://deepwiki.com/open-meteo/open-meteo
+- 原始项目：[Open-Meteo](https://github.com/open-meteo/open-meteo)
+  - DeepWiki👉 https://deepwiki.com/open-meteo/open-meteo
 - open-meteo于2025-02-06接入Himawari SWR：    
   👉 [feat: JMA JAXA Himawari solar radiation](https://github.com/open-meteo/open-meteo/pull/1220)
 - open-meteo SWR接口：   
