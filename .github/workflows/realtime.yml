@@ -21,7 +21,10 @@ jobs:
     - name: Configure conda cache
       shell: bash -l {0}
       run: |
-        conda config --set pkgs_dirs ~/conda_pkgs_dir
+        cat << EOF > ~/.condarc
+        pkgs_dirs:
+          - ~/conda_pkgs_dir
+        EOF
     - uses: actions/cache@v4
       with:
         path: ~/conda_pkgs_dir
