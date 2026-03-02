@@ -54,14 +54,14 @@ jobs:
     - name: Run Python
       run: |
         python archive_h8_hist.py --date "${{ github.event.inputs.date }}"
-    # - name: Commit changes if any
-    #   run: |
-    #     git config --global user.email "BOT@github.com"
-    #     git config --global user.name "githubBOT"
-    #     git add .
-    #     git diff --cached --quiet || git commit -m "update realtime data" -a
-    #     # git commit -m "update realtime data" -a
-    # - name: Push changes
-    #   uses: ad-m/github-push-action@master
-    #   with:
-    #     github_token: ${{secrets.GTOKEN}}
+    - name: Commit changes if any
+      run: |
+        git config --global user.email "BOT@github.com"
+        git config --global user.name "githubBOT"
+        git add .
+        git diff --cached --quiet || git commit -m "update realtime data" -a
+        # git commit -m "update realtime data" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{secrets.GTOKEN}}
