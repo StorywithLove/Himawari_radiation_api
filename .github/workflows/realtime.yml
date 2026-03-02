@@ -35,6 +35,7 @@ jobs:
 
     # main run
     - name: Run Python
+      shell: bash -l {0}
       run: |
         python archive_h8_realtime.py
     - name: Commit changes if any
