@@ -38,7 +38,7 @@
 ### 本项目下载方式
 
 下载 - 按研究区域裁剪为tif    
-⚠️：github actions运行时, datetime.now() 返回的是utc时间。  
+⚠️ 时区问题：github actions运行时, datetime.now() 返回的是utc时间。  
 
 ---
 
