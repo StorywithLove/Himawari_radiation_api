@@ -114,7 +114,7 @@ if __name__ == "__main__":
         下载 - 裁剪 - 保存并清理
         G:\miniconda3\envs\PV\python G:\lcx\Atmos\scripts\Himawari\archive_h8_realtime.py
     """
-    year, month, day, hour, min = 2026, 2, 28, 13, 0
+    year, month, day, hour, min = 2026, 3, 2, 14, 30
     cur_dt = datetime(year, month, day, hour, min, tzinfo=ZoneInfo("Asia/Shanghai"))
     # save_dir = r'G:/lcx/Atmos/data/Himawari-8/10_min'
     save_dir = Path('Archive')/cur_dt.strftime("%Y%m%d")
