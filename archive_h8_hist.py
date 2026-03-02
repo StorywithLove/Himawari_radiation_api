@@ -119,8 +119,7 @@ def nc2tif_area(nc_path = './monthly/2022', var = 'SWR', tif_path = './monthly/2
     out_tif.FlushCache()  # 将数据写入到硬盘
     out_tif = None  # 关闭tif文件
 
-def process_dt(cur_dt):
-    var = 'SWR'
+def process_dt(cur_dt, var = 'SWR'):
     save_dir = Path('Archive')/cur_dt.strftime("%Y%m%d")
     save_dir.mkdir(parents=True, exist_ok=True)
     url = get_ftp_url(cur_dt)
@@ -154,13 +153,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # cal by day
-    dt = datetime.strptime(args.date, '%Y-%m-%d')
+    dt = datetime.strptime(args.date, '%Y-%m-%d').replace(tzinfo=ZoneInfo('UTC'))
     all_dts = [dt.replace(hour=h, minute=m, second=0, microsecond=0) for h in range(24) for m in (0,10,20,30,40,50)]
 
-    with ThreadPoolExecutor(max_workers=4) as executor:  # 根据 runner 资源调整线程数
-        futures = [executor.submit(process_dt, cur_dt) for cur_dt in all_dts]
-        for f in as_completed(futures):
-            f.result()  # 触发异常
+    [process_dt(cur_dt) for cur_dt in all_dts]
+    # with ThreadPoolExecutor(max_workers=4) as executor:  # 根据 runner 资源调整线程数
+    #     futures = [executor.submit(process_dt, cur_dt) for cur_dt in all_dts]
+    #     for f in as_completed(futures):
+    #         f.result()  # 触发异常
 
     # var = 'SWR'
     # for cur_dt in all_dts:
