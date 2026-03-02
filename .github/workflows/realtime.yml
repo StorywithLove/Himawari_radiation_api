@@ -13,21 +13,26 @@ jobs:
     - uses: actions/checkout@v2
     - name: Show current time
       run: date
-    # 核心步骤：安装依赖（可选，ubuntu-latest默认有wget）+ 下载NC文件并输出速度
-    - name: Download H8 NC file from FTP with speed
+    - name: Install system dependencies (GDAL)
       run: |
-        # 替换为你的FTP地址、账号密码、文件路径
-        FTP_USER="13007129791_163.com"
-        FTP_PASS="SP+wari8"
-        FTP_HOST="ftp.ptree.jaxa.jp"  # H8的FTP服务器地址
-        NC_FILE_PATH="/pub/himawari/L2/PAR/021/202602/28/09/H09_20260228_0900_RFL021_FLDK.02801_02401.nc"  # NC文件在FTP上的路径
-        SAVE_FILE_NAME="h8_download.nc"  # 本地保存的文件名
-        
-        # 使用wget下载，开启进度条、速度显示、断点续传、详细日志
-        wget ftp://13007129791_163.com:SP+wari8@ftp.ptree.jaxa.jp/pub/himawari/L2/PAR/021/202602/28/09/H09_20260228_0900_RFL021_FLDK.02801_02401.nc
-    
-    # 可选步骤：验证下载文件（检查文件是否存在、大小）
-    - name: Verify downloaded file
+        sudo apt-get update
+        sudo apt-get install -y gdal-bin libgdal-dev
+    - name: Install Python dependencies
       run: |
-        ls -lh h8_download.nc  # 查看文件大小、权限等信息
-        du -sh h8_download.nc  # 简洁显示文件大小
+        python -m pip install --upgrade pip
+        pip install numpy netCDF4
+        pip install GDAL==$(gdal-config --version)
+    - name: Run Python
+      run: |
+        python archive_h8_realtime.py
+    - name: Commit changes if any
+      run: |
+        git config --global user.email "BOT@github.com"
+        git config --global user.name "githubBOT"
+        git add .
+        git diff --cached --quiet || git commit -m "update realtime data" -a
+        # git commit -m "update realtime data" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{secrets.GTOKEN}}
