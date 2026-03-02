@@ -13,18 +13,18 @@ import netCDF4 as nc
 # import xarray as xr
 
 
-def get_ftp_url(local_dt):
+def get_ftp_url(utc_dt):
     """
         基于时间戳生成ftp文件名和url
     :return: url
     """
-    download_dt = local_dt - timedelta(hours=8)  
+    download_dt = utc_dt.astimezone(ZoneInfo("UTC"))  # 确保使用UTC时间
     year, month, day, hour, min = str(download_dt.year), str(download_dt.month).zfill(2), str(download_dt.day).zfill(2), str(download_dt.hour).zfill(2), str(download_dt.minute).zfill(2)
     url = f'ftp://13007129791_163.com:SP+wari8@ftp.ptree.jaxa.jp/pub/himawari/L2/PAR/021/{year}{month}/{day}/{hour}/H09_{year}{month}{day}_{hour}{min}_RFL021_FLDK.02801_02401.nc'
     return url 
     
 # download nc from ftp
-def downloadhtp(local_dt, save_dir):    
+def downloadhtp(utc_dt, save_dir):    
     """
         基于wget下载Java的ftp文件, 文件名基于时间戳生成
         eg: 
@@ -33,7 +33,7 @@ def downloadhtp(local_dt, save_dir):
         边界条件:
             文件延迟, 注意未更新文件下载反馈
     """
-    url = get_ftp_url(local_dt)
+    url = get_ftp_url(utc_dt)
     save_path = os.path.join(save_dir, os.path.basename(url))
     log_file = os.path.join(save_dir, "wget.log")
      
@@ -124,7 +124,8 @@ if __name__ == "__main__":
     """
     #year, month, day, hour, min = 2026, 3, 2, 14, 30
     #cur_dt = datetime(year, month, day, hour, min, tzinfo=ZoneInfo("Asia/Shanghai"))
-    all_dts = [(datetime.now()-timedelta(hours=h)).replace(minute=m, second=0, microsecond=0) for h in (1,0) for m in (0,10,20,30,40,50)][::-1]
+    now_utc = datetime.now(tz=ZoneInfo("Asia/Shanghai")).astimezone(ZoneInfo("UTC"))
+    all_dts = [(now_utc-timedelta(hours=h)).replace(minute=m, second=0, microsecond=0) for h in (1,0) for m in (0,10,20,30,40,50)][::-1]
 
     var = 'SWR'
     for cur_dt in all_dts:
