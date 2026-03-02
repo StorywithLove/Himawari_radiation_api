@@ -36,8 +36,9 @@
 下载 - 内存读取 - 自定义OM格式，路径：[JaxaHimawariDownloader.swift](https://github.com/open-meteo/open-meteo/blob/main/Sources/App/JaxaHimawari/JaxaHimawariDownloader.swift)
 
 ### 本项目下载方式
-注意：github actions运行时, datetime.now() 返回的是utc时间。
-下载 - 按研究区域裁剪为tif
+
+下载 - 按研究区域裁剪为tif    
+⚠️：github actions运行时, datetime.now() 返回的是utc时间。  
 
 ---
 
