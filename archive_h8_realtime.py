@@ -39,7 +39,7 @@ def downloadhtp(utc_dt, save_dir):
      
     cmd = ["wget", "-nv", "--timeout=30", "--tries=5", "--retry-connrefused", "--read-timeout=30",  "-O", save_path, "-o", log_file, url]
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    if result.returncode != 0: print(f"No data at {url}"); return None
+    if result.returncode != 0:  return None
     return save_path
 
 def nc2tif(nc_path = './monthly/2022', var = 'SWR', tif_path = './monthly/2022_tif'):
@@ -133,11 +133,11 @@ if __name__ == "__main__":
         save_dir.mkdir(parents=True, exist_ok=True)
         url = get_ftp_url(cur_dt)
         exists_path = os.path.join(save_dir, os.path.basename(url)).replace('.nc', f'_{var}_HaiNan.tif')
-        if os.path.exists(exists_path): print(f"{exists_path} exists");continue    # file exists
+        if os.path.exists(exists_path): print(f"{exists_path} Exists");continue    # file exists
             
         # (1) download nc from ftp
         nc_path = downloadhtp(cur_dt, save_dir)
-        if nc_path is None: continue     # not Update
+        if nc_path is None: print(f"{url} NotUpdated");continue     # not Update
         
         # (2) nc裁剪并转tif
         hainan_area = [18, 20.5, 108, 111.5]  # [lat_min, lat_max, lon_min, lon_max]
