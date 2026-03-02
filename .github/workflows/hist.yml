@@ -1,7 +1,12 @@
 name: H8_10min_hist
 
 on:
-  workflow_dispatch:      # 允许手动补跑
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Date to process (YYYY-MM-DD)'
+        required: true
+        default: '2026-03-01'
   # schedule:
     # - cron: '50 * * * *'  
 permissions:
@@ -48,15 +53,15 @@ jobs:
     # main run
     - name: Run Python
       run: |
-        python archive_h8_hist.py --date 2026-03-01
-    - name: Commit changes if any
-      run: |
-        git config --global user.email "BOT@github.com"
-        git config --global user.name "githubBOT"
-        git add .
-        git diff --cached --quiet || git commit -m "update realtime data" -a
-        # git commit -m "update realtime data" -a
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{secrets.GTOKEN}}
+        python archive_h8_hist.py --date "${{ github.event.inputs.date }}"
+    # - name: Commit changes if any
+    #   run: |
+    #     git config --global user.email "BOT@github.com"
+    #     git config --global user.name "githubBOT"
+    #     git add .
+    #     git diff --cached --quiet || git commit -m "update realtime data" -a
+    #     # git commit -m "update realtime data" -a
+    # - name: Push changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{secrets.GTOKEN}}
