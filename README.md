@@ -4,11 +4,10 @@
 - 原始项目：[Open-Meteo](https://github.com/open-meteo/open-meteo)
   - DeepWiki👉 https://deepwiki.com/open-meteo/open-meteo
 - Satellite-api
-  - 20250206接入Himawari👉 [feat: JMA JAXA Himawari solar radiation](https://github.com/open-meteo/open-meteo/pull/1220)
-  - 接口域名：https://satellite-api.open-meteo.com/v1/archive
+  - om20250206接入Himawari👉 [feat: JMA JAXA Himawari solar radiation](https://github.com/open-meteo/open-meteo/pull/1220)
   
 ## 📋 项目概述
-本项目实现了一个自动化卫星辐射数据处理系统，用于下载、校正和存档 Himawari-8/9 卫星的短波辐射（SWR）数据，生成可直接用于光伏预测和辐射分析的高质量产品。
+本项目(计划)实现了一个自动化卫星辐射数据处理系统，用于下载、校正和存档 Himawari-8/9 卫星的短波辐射（SWR）数据，生成可直接用于光伏预测和辐射分析的高质量产品。
 
 ## 🎯 核心目标
 - 构建稳定、可复现的近实时辐射处理流程
@@ -32,25 +31,13 @@
 ---
 
 ## 1. H8nc数据存档与二次读取
-**数据下载**
 
-- `JaxaHimawariDownloader.swift` 定义下载方法  
-- 每次下载包含两类文件：
-  - `AuxilaryData.nc`：辅助文件、**直接存档**
-  - 原始 nc 文件：数据文件、**在线解析**
+### Open-Meteo存档方式
+下载 - 内存读取 - 自定义OM格式，路径：[JaxaHimawariDownloader.swift](https://github.com/open-meteo/open-meteo/blob/main/Sources/App/JaxaHimawari/JaxaHimawariDownloader.swift)
 
-解析并校正后的数据会通过 `OmFileSplitter` 写入临时文件，  
-写入路径由 `OmFileSplitter.makeSpatialWriter` 生成；  
-并可选上传至 Amazon S3。
+### 本项目下载方式
+下载 - 按研究区域裁剪为tif
 
-**数据保存路径**
-
-```swift
-// Sources/App/Helper/DomainRegistry.swift
-var directory: String {
-    return "\(OpenMeteo.dataDirectory)\(rawValue)/"
-}
-```
 ---
 
 ## 2. 近实时辐射时间校正
