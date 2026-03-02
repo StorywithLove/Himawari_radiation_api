@@ -48,7 +48,7 @@ jobs:
     # main run
     - name: Run Python
       run: |
-        python archive_h8_hist.py
+        python archive_h8_hist.py --date 2026-03-01
     - name: Commit changes if any
       run: |
         git config --global user.email "BOT@github.com"
