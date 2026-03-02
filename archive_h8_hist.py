@@ -1,12 +1,15 @@
 # -*- coding: utf8 -*-
 # standard lib
-import os, io
+import os, io, sys
+import argparse
 from pathlib import Path
 from datetime import timedelta, datetime, timezone
 from zoneinfo import ZoneInfo
 import subprocess
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # third-party lib
+
 from osgeo import gdal, osr, ogr
 import numpy as np
 import netCDF4 as nc
@@ -116,34 +119,67 @@ def nc2tif_area(nc_path = './monthly/2022', var = 'SWR', tif_path = './monthly/2
     out_tif.FlushCache()  # 将数据写入到硬盘
     out_tif = None  # 关闭tif文件
 
+def process_dt(cur_dt):
+    var = 'SWR'
+    save_dir = Path('Archive')/cur_dt.strftime("%Y%m%d")
+    save_dir.mkdir(parents=True, exist_ok=True)
+    url = get_ftp_url(cur_dt)
+    exists_path = os.path.join(save_dir, os.path.basename(url)).replace('.nc', f'_{var}_HaiNan.tif')
+    if os.path.exists(exists_path): 
+        print(f"{exists_path} Exists")
+        return
+    
+    # (1) download nc from ftp
+    nc_path = downloadhtp(cur_dt, save_dir)
+    if nc_path is None: 
+        print(f"{url} NotUpdated")
+        return
+    
+    # (2) nc裁剪并转tif
+    hainan_area = [18, 20.5, 108, 111.5]
+    tif_path = nc_path.replace('.nc', f'_{var}_HaiNan.tif')
+    nc2tif_area(nc_path=nc_path, var=var, tif_path=tif_path,
+                lat_min=hainan_area[0], lat_max=hainan_area[1],
+                lon_min=hainan_area[2], lon_max=hainan_area[3])
+    os.remove(nc_path)
+
 
 if __name__ == "__main__":
     """
         下载 - 裁剪 - 保存并清理
         G:\miniconda3\envs\PV\python G:\lcx\Atmos\scripts\Himawari\archive_h8_realtime.py
     """
-    #year, month, day, hour, min = 2026, 3, 2, 14, 30
-    #cur_dt = datetime(year, month, day, hour, min, tzinfo=ZoneInfo("Asia/Shanghai"))
-    dt = datetime(2026, 3, 2)
+    parser = argparse.ArgumentParser(description='Himawari-8 数据历史日期下载')
+    parser.add_argument('--date', type=str, default='2026-03-02', help='YYYY-MM-DD')
+    args = parser.parse_args()
+
+    # cal by day
+    dt = datetime.strptime(args.date, '%Y-%m-%d')
     all_dts = [dt.replace(hour=h, minute=m, second=0, microsecond=0) for h in range(24) for m in (0,10,20,30,40,50)]
 
-    var = 'SWR'
-    for cur_dt in all_dts:
-        save_dir = Path('Archive')/cur_dt.strftime("%Y%m%d")
-        save_dir.mkdir(parents=True, exist_ok=True)
-        url = get_ftp_url(cur_dt)
-        exists_path = os.path.join(save_dir, os.path.basename(url)).replace('.nc', f'_{var}_HaiNan.tif')
-        if os.path.exists(exists_path): print(f"{exists_path} Exists");continue    # file exists
+    with ThreadPoolExecutor(max_workers=4) as executor:  # 根据 runner 资源调整线程数
+        futures = [executor.submit(process_dt, cur_dt) for cur_dt in all_dts]
+        for f in as_completed(futures):
+            f.result()  # 触发异常
+
+    # var = 'SWR'
+    # for cur_dt in all_dts:
+        # process_dt(cur_dt)
+        # save_dir = Path('Archive')/cur_dt.strftime("%Y%m%d")
+        # save_dir.mkdir(parents=True, exist_ok=True)
+        # url = get_ftp_url(cur_dt)
+        # exists_path = os.path.join(save_dir, os.path.basename(url)).replace('.nc', f'_{var}_HaiNan.tif')
+        # if os.path.exists(exists_path): print(f"{exists_path} Exists");continue    # file exists
             
-        # (1) download nc from ftp
-        nc_path = downloadhtp(cur_dt, save_dir)
-        if nc_path is None: print(f"{url} NotUpdated");continue     # not Update
+        # # (1) download nc from ftp
+        # nc_path = downloadhtp(cur_dt, save_dir)
+        # if nc_path is None: print(f"{url} NotUpdated");continue     # not Update
         
-        # (2) nc裁剪并转tif
-        hainan_area = [18, 20.5, 108, 111.5]  # [lat_min, lat_max, lon_min, lon_max]
-        tif_path = nc_path.replace('.nc', f'_{var}_HaiNan.tif')
-        nc2tif_area(nc_path=nc_path, var = var, tif_path=tif_path, lat_min=hainan_area[0], lat_max=hainan_area[1], lon_min=hainan_area[2], lon_max=hainan_area[3])
-        os.remove(nc_path)
+        # # (2) nc裁剪并转tif
+        # hainan_area = [18, 20.5, 108, 111.5]  # [lat_min, lat_max, lon_min, lon_max]
+        # tif_path = nc_path.replace('.nc', f'_{var}_HaiNan.tif')
+        # nc2tif_area(nc_path=nc_path, var = var, tif_path=tif_path, lat_min=hainan_area[0], lat_max=hainan_area[1], lon_min=hainan_area[2], lon_max=hainan_area[3])
+        # os.remove(nc_path)
     
     # (3) 额外的nc处理, 例如裁剪后数据分析等
     # xs = xr.open_dataset(tif_path)    # import xarray as xr
