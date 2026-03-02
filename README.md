@@ -32,7 +32,7 @@
 
 ## 1. H8nc数据存档与二次读取
 
-### Open-Meteo存档方式
+### Open-Meteo存档方案
 下载 - 内存读取 - 自定义OM格式，路径：[JaxaHimawariDownloader.swift](https://github.com/open-meteo/open-meteo/blob/main/Sources/App/JaxaHimawari/JaxaHimawariDownloader.swift)
 
 ### 本项目下载方式
@@ -55,7 +55,7 @@
    - 实际应用需要时间平均辐射值
    - 扫描过程中太阳位置持续变化
 
-### 🔧 解决方案：双重向后校正
+### 🔧 Open-Meteo校正方案：[JaxaHimawariDownloader.swift](https://github.com/open-meteo/open-meteo/blob/main/Sources/App/JaxaHimawari/JaxaHimawariDownloader.swift)  
 
 #### 第一层：时间标签校正
 **校正策略**  
@@ -96,7 +96,9 @@ if i == 0 && h.isEmpty && downloadRange.count > 1 {
 }
 ```
 ## 3. 辐射转换
-https://github.com/open-meteo/open-meteo/tree/main/Sources/App/Helper/Solar
+### 🔧 Open-Meteo转换方案：
+[GHI - DHI - DNI - GTI/POV](https://github.com/open-meteo/open-meteo/tree/main/Sources/App/Helper/Solar)  
+
 - Zensun.swift
   - calculateDiffuseRadiationBackwards(), 基于Razo, Müller Witwer分离模型, 从总辐射/地面短波辐射中分解出散射分量、直射分量
 - DirectNormalIrradiance.swift
