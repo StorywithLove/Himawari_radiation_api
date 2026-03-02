@@ -133,7 +133,7 @@ if __name__ == "__main__":
     hainan_area = [18, 20.5, 108, 111.5]  # [lat_min, lat_max, lon_min, lon_max]
     tif_path = nc_path.replace('.nc', f'_{var}_HaiNan.tif')
     nc2tif_area(nc_path=nc_path, var = var, tif_path=tif_path, lat_min=hainan_area[0], lat_max=hainan_area[1], lon_min=hainan_area[2], lon_max=hainan_area[3])
-
+    os.remove(nc_path)
     
     # (4) 额外的nc处理, 例如裁剪后数据分析等
     # xs = xr.open_dataset(tif_path)    # import xarray as xr
