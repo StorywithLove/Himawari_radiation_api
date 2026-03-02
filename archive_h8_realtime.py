@@ -18,7 +18,6 @@ def get_ftp_url(local_dt):
         基于时间戳生成ftp文件名和url
     :return: url
     """
-    local_dt = datetime.now(ZoneInfo("Asia/Shanghai"))
     download_dt = local_dt - timedelta(hours=8)  
     year, month, day, hour, min = str(download_dt.year), str(download_dt.month).zfill(2), str(download_dt.day).zfill(2), str(download_dt.hour).zfill(2), str(download_dt.minute).zfill(2)
     url = f'ftp://13007129791_163.com:SP+wari8@ftp.ptree.jaxa.jp/pub/himawari/L2/PAR/021/{year}{month}/{day}/{hour}/H09_{year}{month}{day}_{hour}{min}_RFL021_FLDK.02801_02401.nc'
