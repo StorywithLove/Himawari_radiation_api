@@ -133,10 +133,11 @@ if __name__ == "__main__":
         save_dir.mkdir(parents=True, exist_ok=True)
         url = get_ftp_url(cur_dt)
         exists_path = os.path.join(save_dir, os.path.basename(url)).replace('.nc', f'_{var}_HaiNan.tif')
-        if os.path.exists(exists_path): continue
+        if os.path.exists(exists_path): continue    # file exists
             
         # (1) download nc from ftp
         nc_path = downloadhtp(cur_dt, save_dir)
+        if nc_path is None: continue     # not Update
         
         # (2) nc裁剪并转tif
         hainan_area = [18, 20.5, 108, 111.5]  # [lat_min, lat_max, lon_min, lon_max]
