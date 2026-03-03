@@ -39,6 +39,21 @@
 
 下载 - 按研究区域裁剪为tif    
 ⚠️ 时区问题：github actions运行时, datetime.now() 返回的是utc时间。  
+- 实时数据，腾讯云函数触发，具体参考前一个项目[workflow](https://github.com/StorywithLove/workflow)
+- 历史数据，服务器里按日触发，查询执行完成后触发下一个项目
+```swift
+def get_latest_run():
+    url = f"https://api.github.com/repos/StorywithLove/Himawari_radiation_api/actions/workflows/hist.yml/runs?per_page=1"
+    headers = {
+        "Authorization": f"Bearer {GTOKEN}",
+        "Accept": "application/vnd.github+json"
+    }
+    r = requests.get(url, headers=headers)
+    r.raise_for_status()
+    run_info = r.json()["workflow_runs"][0]
+    return run_info
+    #return datetime.fromisoformat(run_info['created_at'].rstrip('Z')).replace(tzinfo=timezone.utc), run_info["status"], run_info["conclusion"]
+```
 
 ---
 
