@@ -43,7 +43,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install GDAL==$(gdal-config --version)
-        pip install numpy netCDF4 rasterio sqlalchemy pandas psycopg2-binary
+        pip install numpy netCDF4 rasterio
 
     # main run
     - name: Run Python
