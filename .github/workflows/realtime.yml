@@ -49,6 +49,9 @@ jobs:
     - name: Run Python
       run: |
         python archive_h8_realtime.py
+      env:
+        H8_USERNAME: ${{ secrets.H8_USERNAME }}
+        H8_PASSWORD: ${{ secrets.H8_PASSWORD }}
     - name: Commit changes if any
       run: |
         git config --global user.email "BOT@github.com"
