@@ -9,14 +9,8 @@ import subprocess
 
 # thirdy party lib
 from osgeo import gdal
-import xarray as xr
-import rioxarray
 import pandas as pd
-import requests
 import rasterio
-from rasterio.merge import merge
-from tqdm import tqdm
-import matplotlib.pyplot as plt
 
 # internal lib
 host = os.getenv("DB_HOST")
@@ -45,7 +39,7 @@ if __name__ == "__main__":
     # date_list = sorted(os.listdir(archive_dir))
     wn_ll = [18.708079, 110.295539]
     values, times = [], []
-    for date in tqdm(date_list):
+    for date in date_list:
         date_dir = os.path.join(archive_dir, date)
         file_list = [os.path.join(date_dir, fp) for fp in os.listdir(date_dir)]
         for fp in file_list:
