@@ -27,5 +27,5 @@ jobs:
       run: |
         python upload_himawari.py
       env:
-        DB_HOST: ${{ secrets.DB_HOST }}
-        DB_PWD: ${{ secrets.DB_PWD }}
+        DB_HOST: ${{secrets.DB_HOST}}
+        DB_PWD: ${{secrets.DB_PWD}}
