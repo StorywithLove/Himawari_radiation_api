@@ -41,7 +41,7 @@ if __name__ == "__main__":
     values, times = [], []
     for date in date_list:
         date_dir = os.path.join(archive_dir, date)
-        file_list = [os.path.join(date_dir, fp) for fp in os.listdir(date_dir)]
+        file_list = [os.path.join(date_dir, fp) for fp in os.listdir(date_dir) if fp.endswith('.tif')]
         for fp in file_list:
             with rasterio.open(fp) as src:
                 row, col = src.index(wn_ll[1], wn_ll[0])
