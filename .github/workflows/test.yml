@@ -1,31 +1,31 @@
-name: H8_10min_test
+# name: H8_10min_test
 
-on:
-  workflow_dispatch:
-permissions:
-  contents: write
-jobs:
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Show current time
-      run: date
-    - name: Install system dependencies (GDAL)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gdal-bin libgdal-dev
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
+# on:
+#   workflow_dispatch:
+# permissions:
+#   contents: write
+# jobs:
+#   build-linux:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Show current time
+#       run: date
+#     - name: Install system dependencies (GDAL)
+#       run: |
+#         sudo apt-get update
+#         sudo apt-get install -y gdal-bin libgdal-dev
+#     - name: Install Python dependencies
+#       run: |
+#         python -m pip install --upgrade pip
 
-        pip install GDAL==$(gdal-config --version)
-        pip install rasterio sqlalchemy pandas psycopg2-binary
+#         pip install GDAL==$(gdal-config --version)
+#         pip install rasterio sqlalchemy pandas psycopg2-binary
 
-    # main run
-    - name: Run Python
-      run: |
-        python upload_himawari.py
-      env:
-        DB_HOST: ${{secrets.DB_HOST}}
-        DB_PWD: ${{secrets.DB_PWD}}
+#     # main run
+#     - name: Run Python
+#       run: |
+#         python upload_himawari.py
+#       env:
+#         DB_HOST: ${{secrets.DB_HOST}}
+#         DB_PWD: ${{secrets.DB_PWD}}
