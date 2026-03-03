@@ -1,4 +1,4 @@
-name: H8_10min_test
+name: func_test
 
 on:
   workflow_dispatch:
