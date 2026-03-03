@@ -42,8 +42,9 @@ jobs:
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install GDAL==$(gdal-config --version)
         pip install numpy netCDF4
+        pip install GDAL==$(gdal-config --version)
+        
 
     # main run
     - name: Run Python
