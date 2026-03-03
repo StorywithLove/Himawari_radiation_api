@@ -133,7 +133,7 @@ if __name__ == "__main__":
     #year, month, day, hour, min = 2026, 3, 2, 14, 30
     #cur_dt = datetime(year, month, day, hour, min, tzinfo=ZoneInfo("Asia/Shanghai"))
     now_utc = datetime.now(tz=ZoneInfo("Asia/Shanghai")).astimezone(ZoneInfo("UTC"))
-    all_dts = [(now_utc-timedelta(hours=h)).replace(minute=m, second=0, microsecond=0) for h in range(13) for m in (0,10,20,30,40,50)][::-1]
+    all_dts = [(now_utc-timedelta(hours=h)).replace(minute=m, second=0, microsecond=0) for h in range(14) for m in (0,10,20,30,40,50)][::-1]
 
     var = 'SWR'
     for cur_dt in all_dts:
