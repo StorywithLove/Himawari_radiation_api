@@ -9,11 +9,16 @@ import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # third-party lib
-
 from osgeo import gdal, osr, ogr
 import numpy as np
 import netCDF4 as nc
 # import xarray as xr
+
+# internal lib
+usr = os.getenv("H8_USERNAME")
+pwd = os.getenv("H8_PASSWORD")
+if not usr or not pwd:
+    raise RuntimeError("H8 credentials not set")
 
 
 def get_ftp_url(utc_dt):
@@ -23,7 +28,7 @@ def get_ftp_url(utc_dt):
     """
     download_dt = utc_dt.astimezone(ZoneInfo("UTC"))  # 确保使用UTC时间
     year, month, day, hour, min = str(download_dt.year), str(download_dt.month).zfill(2), str(download_dt.day).zfill(2), str(download_dt.hour).zfill(2), str(download_dt.minute).zfill(2)
-    url = f'ftp://13007129791_163.com:SP+wari8@ftp.ptree.jaxa.jp/pub/himawari/L2/PAR/021/{year}{month}/{day}/{hour}/H09_{year}{month}{day}_{hour}{min}_RFL021_FLDK.02801_02401.nc'
+    url = f'ftp://{usr}:{pwd}@ftp.ptree.jaxa.jp/pub/himawari/L2/PAR/021/{year}{month}/{day}/{hour}/H09_{year}{month}{day}_{hour}{min}_RFL021_FLDK.02801_02401.nc'
     return url 
     
 # download nc from ftp
@@ -31,8 +36,6 @@ def downloadhtp(utc_dt, save_dir):
     """
         基于wget下载Java的ftp文件, 文件名基于时间戳生成
         eg: 
-            wget -O G:/lcx/tmp.nc ftp://13007129791_163.com:SP+wari8@ftp.ptree.jaxa.jp/pub/himawari/L2/PAR/021/202602/28/09/H09_20260228_0900_RFL021_FLDK.02801_02401.nc
-            wget -P G:/lcx/ ftp://13007129791_163.com:SP+wari8@ftp.ptree.jaxa.jp/pub/himawari/L2/PAR/021/202602/28/09/H09_20260228_0900_RFL021_FLDK.02801_02401.nc
         边界条件:
             文件延迟, 注意未更新文件下载反馈
     """
