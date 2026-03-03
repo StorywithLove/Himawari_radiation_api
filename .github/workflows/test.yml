@@ -1,4 +1,4 @@
-name: H8_10min_hist
+name: H8_10min_test
 
 on:
   workflow_dispatch:
