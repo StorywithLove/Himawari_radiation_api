@@ -56,4 +56,4 @@ if __name__ == "__main__":
     
     upload_df = df_bj[df_bj.index > server_lasted_df.tz_convert("Asia/Shanghai").index[0]]
     upload_df.to_sql(table_name, con=engine, if_exists="append", index=True)
-    print(upload_df.iloc[[-1, 1]])
+    if not upload_df.empty: print(upload_df.iloc[[-1, 1]])
