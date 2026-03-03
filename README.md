@@ -32,13 +32,12 @@
 
 ## 1. H8nc数据存档与二次读取
 
-### Open-Meteo存档方案
+### 🔧 Open-Meteo存档方案
 下载 - 内存读取 - 自定义OM格式，路径：[JaxaHimawariDownloader.swift](https://github.com/open-meteo/open-meteo/blob/main/Sources/App/JaxaHimawari/JaxaHimawariDownloader.swift)
 
-### 本项目下载方式
-
-下载 - 按研究区域裁剪为tif    
-⚠️ 时区问题：github actions运行时, datetime.now() 返回的是utc时间。  
+### 本项目存档方案
+实时下载nc - 提取SWR - 裁剪指定区域为tif    
+**注意时区问题**：github actions运行时, datetime.now() 返回的是utc时间。  
 - 实时数据，腾讯云函数触发，具体参考前一个项目[workflow](https://github.com/StorywithLove/workflow)
 - 历史数据，服务器里按日触发，查询执行完成后触发下一个项目
 ```swift
@@ -58,60 +57,28 @@ def get_latest_run():
 ---
 
 ## 2. 近实时辐射时间校正
-⚠️ 核心挑战：为什么需要双重校正？  
-
 原始 Himawari L2 SWR 数据存在两个关键问题，使其无法直接用于时间序列分析：
+- **时间标签不一致**：文件名时间 = 扫描开始时间（如 10:00）、实际观测时间随扫描位置变化（南北差异可达 8-10 分钟，日本区域的像元实际在 10:08 才被观测到）
+- **物理含义不匹配**：原始数据是瞬时辐射值、实际应用需要时间平均辐射值、扫描过程中太阳位置持续变化
 
-- **时间标签不一致**
-   - 文件名时间 = 扫描开始时间（如 10:00）
-   - 实际观测时间 = 随扫描位置变化（南北差异可达 8-10 分钟）
-   - 例如：日本区域的像元实际在 10:08 才被观测到
-
-- **物理含义不匹配**
-   - 原始数据是瞬时辐射值
-   - 实际应用需要时间平均辐射值
-   - 扫描过程中太阳位置持续变化
-
-### 🔧 Open-Meteo校正方案：[JaxaHimawariDownloader.swift](https://github.com/open-meteo/open-meteo/blob/main/Sources/App/JaxaHimawari/JaxaHimawariDownloader.swift)  
+### 🔧 Open-Meteo校正方案  
+[JaxaHimawariDownloader.swift](https://github.com/open-meteo/open-meteo/blob/main/Sources/App/JaxaHimawari/JaxaHimawariDownloader.swift)  
 
 #### 第一层：时间标签校正
-**校正策略**  
 将一次完整的扫描数据视为其后 10 分钟区间的平均辐射：
 
 | 原始文件时间 | 实际观测时间 | 校正后时间 | 物理含义 |
 |--------------|-------------|------------|-----------|
 | 10:00        | 10:00-10:08 | 10:10      | 10:00-10:10 瞬时辐射(中间结果) |
 
-**代码实现示例**（Swift）:
-```swift
-// JaxaHimawariDownloader.swift
-let time = run.add(domain.dtSeconds)  // dtSeconds = 600（10分钟）
-```
 ---
 #### 第二层：物理量校正  
-
-**校正策略**   
 将瞬时辐射值转换为 10 分钟(向后)平均：  
 | 校正后时间 | 物理含义 |
 |------------|-----------|
 | 10:10      | 10:00-10:10 平均辐射|
-
-**关键处理**    
-- 依赖前序数据，需要前 10 分钟的数据进行插值  
-- 智能补偿：若缺失前序数据，自动回退下载  
-- 降级策略：无法校正时标记缺测
   
-**代码实现示例**（Swift）:
-```swift
-// 主调用函数. Sources/App/Helper/Solar/Zensun.swift
-Zensun.instantaneousSolarRadiationToBackwardsAverages()
 
-// 首个时间点处理
-if i == 0 && h.isEmpty && downloadRange.count > 1 {
-    // 主动回退下载前一个时间点（如 9:50）
-    return try await downloadRun(..., run: run.add(-600), ...)
-}
-```
 ## 3. 辐射转换
 ### 🔧 Open-Meteo转换方案：
 [GHI - DHI - DNI - GTI/POV](https://github.com/open-meteo/open-meteo/tree/main/Sources/App/Helper/Solar)  
