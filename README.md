@@ -7,7 +7,7 @@
   - om20250206接入Himawari👉 [feat: JMA JAXA Himawari solar radiation](https://github.com/open-meteo/open-meteo/pull/1220)
   
 ## 📋 项目概述
-本项目(计划)实现了一个自动化卫星辐射数据处理系统，用于下载、校正和存档 Himawari-8/9 卫星的短波辐射（SWR）数据，生成可直接用于光伏预测和辐射分析的高质量产品。
+以Open-Meteo提供的近实时卫星辐射产品为基础，参考其存档、校正与转换模块，设计冗余库作为工程备份
 
 ## 🎯 核心目标
 - 构建稳定、可复现的近实时辐射处理流程
