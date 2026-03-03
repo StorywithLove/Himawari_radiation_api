@@ -52,7 +52,10 @@ jobs:
       env:
         H8_USERNAME: ${{ secrets.H8_USERNAME }}
         H8_PASSWORD: ${{ secrets.H8_PASSWORD }}
-    - name: Run Python
+    - name: Install Python dependencies for upload
+      run: |
+        pip install rasterio sqlalchemy pandas psycopg2-binary
+    - name: Run Python_upload
       run: |
         python upload_himawari.py
       env:
