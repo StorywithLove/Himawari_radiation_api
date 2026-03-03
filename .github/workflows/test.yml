@@ -20,7 +20,7 @@ jobs:
         python -m pip install --upgrade pip
 
         pip install GDAL==$(gdal-config --version)
-        pip install rasterio sqlalchemy 
+        pip install rasterio sqlalchemy pandas
 
     # main run
     - name: Run Python
