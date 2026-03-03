@@ -51,7 +51,7 @@ if __name__ == "__main__":
             
     df = pd.DataFrame({"SWR": values}, index=pd.DatetimeIndex(times))
     df_bj = df.tz_convert("Asia/Shanghai")
-    df_bj.name = 'time'
+    df_bj.index.name = 'time'
     df_bj['name'] = '万宁礼纪'
     
     upload_df = df_bj[df_bj.index > server_lasted_df.tz_convert("Asia/Shanghai").index[0]]
