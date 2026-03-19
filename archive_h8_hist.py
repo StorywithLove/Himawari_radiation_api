@@ -34,7 +34,7 @@ def get_ftp_url(utc_dt):
 # download nc from ftp
 def downloadhtp(utc_dt, save_dir):    
     """
-        基于wget下载Java的ftp文件, 文件名基于时间戳生成
+        基于wget下载Jaxa的ftp文件, 文件名基于时间戳生成
         eg: 
         边界条件:
             文件延迟, 注意未更新文件下载反馈
