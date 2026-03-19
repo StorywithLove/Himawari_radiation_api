@@ -1,7 +1,7 @@
 name: H8_10min_download
 
 on:
-  workflow_dispatch:      # 允许手动补跑
+  workflow_dispatch:      # 外部云函数触发
   # schedule:
     # - cron: '50 * * * *'  
 permissions:
